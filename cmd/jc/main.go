@@ -20,7 +20,7 @@ func main() {
 		fmt.Println(err)
 	}
 	fmt.Println(tmpfile.Name())
-	err = as.FromVideo("/home/radioact1ve/Downloads/ocean.mp4", tmpfile.Name())
+	err = as.FromVideoFile("/home/radioact1ve/Downloads/ocean.mp4", tmpfile.Name())
 	fmt.Println(err)
 }
 

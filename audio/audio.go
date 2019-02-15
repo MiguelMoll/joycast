@@ -7,7 +7,7 @@ import (
 )
 
 // AudioSeer is high level type to interact and create
-// audio files
+// audio data
 type AudioSeer struct {
 	Config
 	exec exec.Executor
@@ -18,7 +18,7 @@ type Config struct {
 	Log zerolog.Logger
 }
 
-// New creates a new AudioSeer type
+// New creates a AudioSeer type
 func New(config Config) *AudioSeer {
 	as := &AudioSeer{
 		Config: config,
@@ -30,8 +30,8 @@ func New(config Config) *AudioSeer {
 	return as
 }
 
-// FromVideo extracts the audio from a video file
-func (as *AudioSeer) FromVideo(file string, dest string) error {
+// FromVideoFile extracts the audio from a video file
+func (as *AudioSeer) FromVideoFile(file string, dest string) error {
 	output, err := as.exec.Run("ffmpeg", "-y", "-i", file, "-f", "mp3", "-ab", "192000", "-vn", dest)
 	if err != nil {
 		as.Log.Error().Err(err).Str("stderr", output.StdErr).Msg("ffmpeg failed to extract audio")
