@@ -70,6 +70,7 @@ func main() {
 	e.Use(middleware.Recover())
 
 	e.GET("/", func(c echo.Context) error { return c.Render(http.StatusOK, "index.html", nil) })
+	e.GET("/google8151a84b9af0aeb1.html", func(c echo.Context) error { return c.Render(http.StatusOK, "google8151a84b9af0aeb1.html", nil) })
 	e.POST("/upload", upload)
 
 	e.Logger.Fatal(e.Start(fmt.Sprintf(":%s", port)))
