@@ -2,14 +2,16 @@ package main
 
 import (
 	"fmt"
+	"html/template"
 	"io"
 	"net/http"
 	"os"
-	"text/template"
 
-	"github.com/MiguelMoll/joycast/audio"
+	"github.com/gobuffalo/packr"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
+
+	"github.com/MiguelMoll/joycast/audio"
 )
 
 func upload(c echo.Context) error {
@@ -52,11 +54,18 @@ func upload(c echo.Context) error {
 }
 
 func main() {
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8000"
+	}
 	e := echo.New()
 
-	t := &Template{
-		templates: template.Must(template.ParseGlob("html/*.html")),
+	box := packr.NewBox("./templates")
+	t := &Renderer{
+		templates: template.New("frontend"),
+		box:       box,
 	}
+
 	e.Renderer = t
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
@@ -64,13 +73,18 @@ func main() {
 	e.GET("/", func(c echo.Context) error { return c.Render(http.StatusOK, "index.html", nil) })
 	e.POST("/upload", upload)
 
-	e.Logger.Fatal(e.Start(":1323"))
+	e.Logger.Fatal(e.Start(fmt.Sprintf(":%s", port)))
 }
 
-type Template struct {
+type Renderer struct {
 	templates *template.Template
+	box       packr.Box
 }
 
-func (t *Template) Render(w io.Writer, name string, data interface{}, c echo.Context) error {
-	return t.templates.ExecuteTemplate(w, name, data)
+func (r *Renderer) Render(w io.Writer, name string, data interface{}, c echo.Context) error {
+	t, err := r.templates.Parse(r.box.String(name))
+	if err != nil {
+		return err
+	}
+	return t.Execute(w, data)
 }

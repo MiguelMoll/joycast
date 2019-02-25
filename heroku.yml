@@ -1,0 +1,8 @@
+---
+build:
+  docker:
+    web: 
+      dockerfile: Dockerfile
+      target: runner
+run:
+  web: /app/bin/web
