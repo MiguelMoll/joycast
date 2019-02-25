@@ -62,8 +62,7 @@ func main() {
 
 	box := packr.NewBox("./templates")
 	t := &Renderer{
-		templates: template.New("frontend"),
-		box:       box,
+		box: box,
 	}
 
 	e.Renderer = t
@@ -77,12 +76,11 @@ func main() {
 }
 
 type Renderer struct {
-	templates *template.Template
-	box       packr.Box
+	box packr.Box
 }
 
 func (r *Renderer) Render(w io.Writer, name string, data interface{}, c echo.Context) error {
-	t, err := r.templates.Parse(r.box.String(name))
+	t, err := template.New(name).Parse(r.box.String(name))
 	if err != nil {
 		return err
 	}
