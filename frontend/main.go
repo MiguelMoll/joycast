@@ -29,6 +29,8 @@ func signin(c echo.Context) error {
 		c.Error(err)
 	}
 
+	fmt.Println(string(b))
+
 	config, err = google.ConfigFromJSON(b, youtube.YoutubeReadonlyScope)
 	if err != nil {
 		c.Error(err)
