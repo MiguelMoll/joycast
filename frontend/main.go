@@ -7,7 +7,6 @@ import (
 	"io"
 	"net/http"
 	"os"
-	"path/filepath"
 
 	"github.com/gobuffalo/packr"
 	"github.com/labstack/echo"
@@ -19,7 +18,6 @@ import (
 	"github.com/MiguelMoll/joycast/audio"
 )
 
-var creds = filepath.Join(os.TempDir(), "creds")
 var config *oauth2.Config
 
 var secret = []byte(`{"web":{"client_id":"1003910230744-gqvdgs38d2kvllslba3jvddsgvo5pckq.apps.googleusercontent.com","project_id":"projectcast","auth_uri":"https://accounts.google.com/o/oauth2/auth","token_uri":"https://oauth2.googleapis.com/token","auth_provider_x509_cert_url":"https://www.googleapis.com/oauth2/v1/certs","client_secret":"4WqhzHGa9_eJnVovcHQsS_CY","redirect_uris":["http://www.sire.ninja/auth"],"javascript_origins":["http://www.sire.ninja"]}}`)
@@ -54,7 +52,7 @@ func ytinfo(c echo.Context) error {
 		c.Error(err)
 	}
 
-	fmt.Println(tok)
+	fmt.Println("token:", tok)
 
 	client := config.Client(context.Background(), tok)
 	service, err := youtube.New(client)
@@ -68,6 +66,7 @@ func ytinfo(c echo.Context) error {
 		c.Error(err)
 	}
 
+	fmt.Println("Response:", response)
 	fmt.Println("Len:", len(response.Items))
 	output := fmt.Sprintf("This channel's ID is %s. Its title is '%s', "+
 		"and it has %d views.\n",
