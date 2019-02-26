@@ -8,5 +8,7 @@ WORKDIR /app
 RUN packr build -o bin/web ./frontend 
 
 FROM debian:stretch-slim as runner
-COPY --from=builder /app/bin/ /app/bin/
+WORKDIR /app
+COPY --from=builder /app /app
+COPY --from=builder /app/frontend/client_secret.json /app/bin
 CMD ["bin/web"]
