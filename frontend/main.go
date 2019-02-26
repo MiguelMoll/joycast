@@ -47,11 +47,14 @@ func ytinfo(c echo.Context) error {
 		return c.Redirect(http.StatusTemporaryRedirect, "/signin")
 	}
 
+	fmt.Println("code:", code)
+
 	tok, err := config.Exchange(oauth2.NoContext, code)
 	if err != nil {
 		c.Error(err)
 	}
 
+	fmt.Println(err)
 	fmt.Println("token:", tok)
 
 	client := config.Client(context.Background(), tok)
