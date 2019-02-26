@@ -29,12 +29,14 @@ func signin(c echo.Context) error {
 		c.Error(err)
 	}
 
-	fmt.Println(string(b))
+	fmt.Println("==============", string(b))
 
 	config, err = google.ConfigFromJSON(b, youtube.YoutubeReadonlyScope)
 	if err != nil {
 		c.Error(err)
 	}
+	fmt.Println(err)
+	fmt.Println(config)
 
 	authURL := config.AuthCodeURL("state-token", oauth2.AccessTypeOffline)
 	return c.Redirect(http.StatusTemporaryRedirect, authURL)
