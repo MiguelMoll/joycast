@@ -54,6 +54,8 @@ func ytinfo(c echo.Context) error {
 		c.Error(err)
 	}
 
+	fmt.Println(tok)
+
 	client := config.Client(context.Background(), tok)
 	service, err := youtube.New(client)
 	if err != nil {
@@ -65,6 +67,8 @@ func ytinfo(c echo.Context) error {
 	if err != nil {
 		c.Error(err)
 	}
+
+	fmt.Println("Len:", len(response.Items))
 	output := fmt.Sprintf("This channel's ID is %s. Its title is '%s', "+
 		"and it has %d views.\n",
 		response.Items[0].Id,
