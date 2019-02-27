@@ -1,23 +1,20 @@
 .PHONY: build clean mocks report test images cmdtest
 
 build:
-	go build -o bin/jc ./cmd/jc/main.go 
+	go build -o bin/web ./cmd/web/main.go 
 
 clean:
-	rm coverage.out
+	rm -f coverage.out
 	rm -rf bin/
 
 mocks:
 	go generate ./...
 
-report:
+report: test
 	go tool cover -html=coverage.out
 
 test:
 	go test -v -coverprofile=coverage.out ./...
 
 images:
-	docker build --target=cmdtest -t jc/cmdtest:latest .
-
-cmdtest:
-	docker run --rm -it jc/cmdtest
+	docker build -t web -f Dockerfile .

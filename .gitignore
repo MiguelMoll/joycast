@@ -2,5 +2,6 @@ main
 /bin
 coverage.out
 
+# Ignore media files!
 *.mp4
 *.mp3
