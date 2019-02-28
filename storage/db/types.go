@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/jinzhu/gorm/dialects/postgres"
+	"golang.org/x/oauth2"
 
 	"github.com/MiguelMoll/joycast/storage"
 )
@@ -53,7 +54,7 @@ func storeUser(user *User) (*storage.User, error) {
 	}
 
 	if len(user.OauthToken.RawMessage) > 0 {
-		var token storage.OauthToken
+		var token oauth2.Token
 		if err := json.Unmarshal(user.OauthToken.RawMessage, &token); err != nil {
 			return nil, err
 		}

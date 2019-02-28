@@ -31,7 +31,7 @@ func (d *DB) CreateUser(user *storage.User) error {
 	return d.client.Create(du).Error
 }
 
-func (d *DB) GetUser(id string) (*storage.User, error) {
+func (d *DB) GetUser(id uint) (*storage.User, error) {
 	var user User
 	err := d.client.First(&user, id).Error
 	if err != nil {
@@ -41,4 +41,13 @@ func (d *DB) GetUser(id string) (*storage.User, error) {
 	su, err := storeUser(&user)
 
 	return su, nil
+}
+
+func (d *DB) SaveUser(user *storage.User) error {
+	du, err := dbUser(user)
+	if err != nil {
+		return err
+	}
+
+	return d.client.Save(du).Error
 }
