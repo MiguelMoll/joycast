@@ -1,30 +1,44 @@
 package db
 
 import (
+	"github.com/MiguelMoll/joycast/storage"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
-	"golang.org/x/oauth2"
-
-	"github.com/MiguelMoll/joycast/storage"
 )
 
 type DB struct {
-	db *gorm.DB
+	client *gorm.DB
 }
 
 func New(conn string) (*DB, error) {
-	db, err := gorm.Open("postgres", conn)
+	client, err := gorm.Open("postgres", conn)
 	if err != nil {
 		return nil, err
 	}
-	db.AutoMigrate(&Product{})
-	return &DB{db: db}, nil
+
+	return &DB{client: client}, nil
 }
 
-func (d *DB) SaveToken(user *storage.User, token *oauth2.Token) error {
-	return nil
+func (d *DB) Close() error {
+	return d.client.Close()
 }
 
-func (d *DB) GetToken(user *storage.User) (*oauth2.Token, error) {
-	return nil, nil
+func (d *DB) CreateUser(user *storage.User) error {
+	du, err := dbUser(user)
+	if err != nil {
+		return err
+	}
+	return d.client.Create(du).Error
+}
+
+func (d *DB) GetUser(id string) (*storage.User, error) {
+	var user User
+	err := d.client.First(&user, id).Error
+	if err != nil {
+		return nil, err
+	}
+
+	su, err := storeUser(&user)
+
+	return su, nil
 }

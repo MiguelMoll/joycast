@@ -7,6 +7,7 @@ require (
 	github.com/jinzhu/inflection v0.0.0-20180308033659-04140366298a // indirect
 	github.com/labstack/echo/v4 v4.0.0
 	github.com/lib/pq v1.0.0 // indirect
+	github.com/pkg/errors v0.8.1
 	github.com/rs/zerolog v1.11.0
 	golang.org/x/oauth2 v0.0.0-20181203162652-d668ce993890
 	google.golang.org/api v0.1.0

@@ -1,16 +1,23 @@
 package web
 
 import (
-	"fmt"
 	"html/template"
 	"io"
 
+	"github.com/MiguelMoll/joycast/storage"
 	"github.com/gobuffalo/packr"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 )
 
-func Run(port string) {
+type Options struct {
+	Address string
+	Store   storage.Store
+}
+
+var Store storage.Store
+
+func Run(opts Options) {
 	// Echo instance
 	e := echo.New()
 	e.HideBanner = true
@@ -22,8 +29,10 @@ func Run(port string) {
 
 	routes(e)
 
+	Store = opts.Store
+
 	// Start server
-	e.Logger.Fatal(e.Start(fmt.Sprintf(":%s", port)))
+	e.Logger.Fatal(e.Start(opts.Address))
 }
 
 func newRenderer() echo.Renderer {

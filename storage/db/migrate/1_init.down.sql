@@ -1,1 +1,1 @@
-DROP TABLE IF EXISTS users, tokens;
+DROP TABLE IF EXISTS users;
