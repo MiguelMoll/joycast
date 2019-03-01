@@ -13,7 +13,7 @@ import (
 // Authenticate is the first step in the process to get a
 // users permission to access their YouTube account
 // This will redirect to Google sign-in page for permission
-func YoutubeAuthenticate(c echo.Context) error {
+func (s *server) YoutubeAuthenticate(c echo.Context) error {
 	config, err := newConfig()
 	if err != nil {
 		return err
@@ -26,7 +26,7 @@ func YoutubeAuthenticate(c echo.Context) error {
 
 // Authorized handles the callback from YouTube with
 // a state and code to create a token
-func YoutubeAuthorized(c echo.Context) error {
+func (s *server) YoutubeAuthorized(c echo.Context) error {
 	config, err := newConfig()
 	if err != nil {
 		return err
@@ -40,14 +40,14 @@ func YoutubeAuthorized(c echo.Context) error {
 		return err
 	}
 
-	u, err := Store.GetUser(1)
+	u, err := s.users.Get(1)
 	if err != nil {
 		return err
 	}
 
 	u.OauthToken = tok
 
-	if err := Store.SaveUser(u); err != nil {
+	if err := s.users.Update(u); err != nil {
 		return err
 	}
 

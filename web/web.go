@@ -4,35 +4,44 @@ import (
 	"html/template"
 	"io"
 
-	"github.com/MiguelMoll/joycast/storage"
+	"github.com/MiguelMoll/joycast/realm"
 	"github.com/gobuffalo/packr"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 )
 
-type Options struct {
-	Address string
-	Store   storage.Store
+type Option func(s *server) error
+
+type server struct {
+	address string
+	echo    *echo.Echo
+	users   *realm.UserService
 }
 
-var Store storage.Store
+func New(opts ...Option) (*server, error) {
+	s := &server{}
 
-func Run(opts Options) {
-	// Echo instance
-	e := echo.New()
-	e.HideBanner = true
-	e.Renderer = newRenderer()
+	s.echo = echo.New()
+	s.echo.HideBanner = true
+	s.echo.Renderer = newRenderer()
 
 	// Middleware
-	e.Use(middleware.Logger())
-	e.Use(middleware.Recover())
+	s.echo.Use(middleware.Logger())
+	s.echo.Use(middleware.Recover())
 
-	routes(e)
+	for _, opt := range opts {
+		if err := opt(s); err != nil {
+			return nil, err
+		}
+	}
 
-	Store = opts.Store
+	routes(s)
 
-	// Start server
-	e.Logger.Fatal(e.Start(opts.Address))
+	return s, nil
+}
+
+func (s *server) Start(address string) error {
+	return s.echo.Start(address)
 }
 
 func newRenderer() echo.Renderer {

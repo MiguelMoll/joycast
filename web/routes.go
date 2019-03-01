@@ -7,22 +7,22 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func routes(e *echo.Echo) {
-	e.GET("/", hello)
-	e.GET("/signin", signin)
+func routes(s *server) {
+	s.echo.GET("/", s.hello)
+	s.echo.GET("/signin", s.signin)
 
 	// youtube endpoints
-	e.GET("/youtube/authenticate", YoutubeAuthenticate)
-	e.GET("/youtube/authorized", YoutubeAuthorized)
+	s.echo.GET("/youtube/authenticate", s.YoutubeAuthenticate)
+	s.echo.GET("/youtube/authorized", s.YoutubeAuthorized)
 }
 
 // Handler
-func hello(c echo.Context) error {
+func (s *server) hello(c echo.Context) error {
 	return c.Render(http.StatusOK, "index.html", nil)
 }
 
-func signin(c echo.Context) error {
-	user, err := Store.GetUser(1)
+func (s *server) signin(c echo.Context) error {
+	user, err := s.users.Get(1)
 	if err != nil {
 		return err
 	}

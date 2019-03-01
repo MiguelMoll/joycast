@@ -3,8 +3,8 @@ package realm
 import "github.com/MiguelMoll/joycast/types"
 
 type UserRepo interface {
-	Create(user *types.User) (uint, error)
-	Delete(id uint) error
-	Find(id uint) (*types.User, error)
-	Update(user *types.User) error
+	UserCreate(user *types.User) (uint, error)
+	UserDelete(id uint) error
+	UserGet(id uint) (*types.User, error)
+	UserUpdate(user *types.User) error
 }

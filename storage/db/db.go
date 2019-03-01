@@ -4,6 +4,7 @@ import (
 	"github.com/MiguelMoll/joycast/types"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
+	"github.com/pkg/errors"
 )
 
 type DB struct {
@@ -23,15 +24,21 @@ func (d *DB) Close() error {
 	return d.client.Close()
 }
 
-func (d *DB) CreateUser(user *types.User) error {
+func (d *DB) UserCreate(user *types.User) (uint, error) {
 	du, err := dbUser(user)
 	if err != nil {
-		return err
+		return 0, err
 	}
-	return d.client.Create(du).Error
+	err = d.client.Create(du).Error
+
+	return du.ID, nil
 }
 
-func (d *DB) GetUser(id uint) (*types.User, error) {
+func (d *DB) UserDelete(id uint) error {
+	return errors.New("user delete not implemented")
+}
+
+func (d *DB) UserGet(id uint) (*types.User, error) {
 	var user User
 	err := d.client.First(&user, id).Error
 	if err != nil {
@@ -43,7 +50,7 @@ func (d *DB) GetUser(id uint) (*types.User, error) {
 	return su, nil
 }
 
-func (d *DB) SaveUser(user *types.User) error {
+func (d *DB) UserUpdate(user *types.User) error {
 	du, err := dbUser(user)
 	if err != nil {
 		return err

@@ -2,33 +2,33 @@ package realm
 
 import "github.com/MiguelMoll/joycast/types"
 
-type UserOption func(u *userService) error
+type UserOption func(u *UserService) error
 
-type userService struct {
+type UserService struct {
 	repo UserRepo
 }
 
 func NewUserService(opts ...UserOption) {}
 
 func UserStore(repo UserRepo) UserOption {
-	return func(u *userService) error {
+	return func(u *UserService) error {
 		u.repo = repo
 		return nil
 	}
 }
 
-func (u *userService) Create(user *types.User) (uint, error) {
-	return u.repo.Create(user)
+func (u *UserService) Create(user *types.User) (uint, error) {
+	return u.repo.UserCreate(user)
 }
 
-func (u *userService) Delete(id uint) error {
-	return u.repo.Delete(id)
+func (u *UserService) Delete(id uint) error {
+	return u.repo.UserDelete(id)
 }
 
-func (u *userService) Find(id uint) (*types.User, error) {
-	return u.repo.Find(id)
+func (u *UserService) Get(id uint) (*types.User, error) {
+	return u.repo.UserGet(id)
 }
 
-func (u *userService) Update(user *types.User) error {
-	return u.repo.Update(user)
+func (u *UserService) Update(user *types.User) error {
+	return u.repo.UserUpdate(user)
 }
