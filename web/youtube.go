@@ -69,5 +69,5 @@ func newClient(token *oauth2.Token) (*youtube.Service, error) {
 // newConfig creates a new OAuth config
 func newConfig() (*oauth2.Config, error) {
 	secret := []byte(`{"web":{"client_id":"1003910230744-gqvdgs38d2kvllslba3jvddsgvo5pckq.apps.googleusercontent.com","project_id":"projectcast","auth_uri":"https://accounts.google.com/o/oauth2/auth","token_uri":"https://oauth2.googleapis.com/token","auth_provider_x509_cert_url":"https://www.googleapis.com/oauth2/v1/certs","client_secret":"4WqhzHGa9_eJnVovcHQsS_CY","redirect_uris":["http://localhost:8000/youtube/authorized"],"javascript_origins":["http://www.sire.ninja"]}}`)
-	return google.ConfigFromJSON(secret, youtube.YoutubeReadonlyScope)
+	return google.ConfigFromJSON(secret, youtube.YoutubeReadonlyScope, youtube.YoutubeUploadScope)
 }

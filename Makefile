@@ -2,6 +2,7 @@
 
 build:
 	go build -o bin/web ./cmd/web/main.go 
+	go build -o bin/minion ./cmd/minion/main.go
 
 clean:
 	rm -f coverage.out

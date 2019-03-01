@@ -1,6 +1,7 @@
 module github.com/MiguelMoll/joycast
 
 require (
+	github.com/go-redis/redis v6.15.2+incompatible
 	github.com/gobuffalo/packr v1.22.0
 	github.com/golang/mock v1.2.0
 	github.com/jinzhu/gorm v1.9.2

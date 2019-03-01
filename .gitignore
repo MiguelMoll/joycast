@@ -2,6 +2,8 @@ main
 /bin
 coverage.out
 
+oauth
+
 # Ignore media files!
 *.mp4
 *.mp3
