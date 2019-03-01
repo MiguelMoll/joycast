@@ -7,7 +7,7 @@ import (
 	"github.com/jinzhu/gorm/dialects/postgres"
 	"golang.org/x/oauth2"
 
-	"github.com/MiguelMoll/joycast/storage"
+	"github.com/MiguelMoll/joycast/types"
 )
 
 type User struct {
@@ -21,7 +21,7 @@ type User struct {
 	OauthToken postgres.Jsonb
 }
 
-func dbUser(user *storage.User) (*User, error) {
+func dbUser(user *types.User) (*User, error) {
 	if user == nil {
 		return nil, nil
 	}
@@ -42,12 +42,12 @@ func dbUser(user *storage.User) (*User, error) {
 	return &du, nil
 }
 
-func storeUser(user *User) (*storage.User, error) {
+func storeUser(user *User) (*types.User, error) {
 	if user == nil {
 		return nil, nil
 	}
 
-	su := storage.User{
+	su := types.User{
 		ID:    user.ID,
 		Name:  user.Name,
 		Email: user.Email,

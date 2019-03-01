@@ -1,18 +1,11 @@
 package storage
 
 import (
-	"golang.org/x/oauth2"
+	"github.com/MiguelMoll/joycast/types"
 )
 
 type Store interface {
-	CreateUser(user *User) error
-	GetUser(id uint) (*User, error)
-	SaveUser(user *User) error
-}
-
-type User struct {
-	ID         uint
-	Name       string
-	Email      string
-	OauthToken *oauth2.Token
+	CreateUser(user *types.User) error
+	GetUser(id uint) (*types.User, error)
+	SaveUser(user *types.User) error
 }
