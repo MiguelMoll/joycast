@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 
+	"github.com/MiguelMoll/joycast/realm"
 	"github.com/MiguelMoll/joycast/storage/db"
 	"github.com/MiguelMoll/joycast/web"
 )
@@ -27,10 +28,19 @@ func main() {
 	}
 	defer db.Close()
 
-	opts := web.Options{
-		Address: fmt.Sprintf(":%s", port),
-		Store:   db,
+	us, err := realm.NewUserService(
+		realm.UserRepo(db),
+	)
+	if err != nil {
+		log.Fatal(err)
 	}
 
-	web.Run(opts)
+	server, err := web.New(
+		web.UserService(us),
+	)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	server.Start(fmt.Sprintf(":%s", port))
 }

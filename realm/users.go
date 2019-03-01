@@ -5,12 +5,22 @@ import "github.com/MiguelMoll/joycast/types"
 type UserOption func(u *UserService) error
 
 type UserService struct {
-	repo UserRepo
+	repo UserRepository
 }
 
-func NewUserService(opts ...UserOption) {}
+func NewUserService(opts ...UserOption) (*UserService, error) {
+	u := &UserService{}
 
-func UserStore(repo UserRepo) UserOption {
+	for _, opt := range opts {
+		if err := opt(u); err != nil {
+			return nil, err
+		}
+	}
+
+	return u, nil
+}
+
+func UserRepo(repo UserRepository) UserOption {
 	return func(u *UserService) error {
 		u.repo = repo
 		return nil

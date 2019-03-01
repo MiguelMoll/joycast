@@ -10,7 +10,7 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 )
 
-type Option func(s *server) error
+type option func(s *server) error
 
 type server struct {
 	address string
@@ -18,7 +18,7 @@ type server struct {
 	users   *realm.UserService
 }
 
-func New(opts ...Option) (*server, error) {
+func New(opts ...option) (*server, error) {
 	s := &server{}
 
 	s.echo = echo.New()
@@ -42,6 +42,13 @@ func New(opts ...Option) (*server, error) {
 
 func (s *server) Start(address string) error {
 	return s.echo.Start(address)
+}
+
+func UserService(u *realm.UserService) option {
+	return func(s *server) error {
+		s.users = u
+		return nil
+	}
 }
 
 func newRenderer() echo.Renderer {
