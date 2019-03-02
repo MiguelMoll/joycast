@@ -63,6 +63,9 @@ func (y *youtubeHandler) Handle(msg string) {
 		log.Fatalf("Error making YouTube API call: %v", err)
 	}
 	fmt.Printf("%#v\n", response)
+	// TODO: Double check if upload is successful? Uploading a duplicate video
+	// returns successful via API but youtube UI shows error on duplicate videos
+	// Double check this assumption
 	fmt.Printf("Upload successful! Video ID: %v\n", response.Id)
 }
 
