@@ -2,7 +2,7 @@ package minion
 
 import (
 	"context"
-	"encoding/json"
+	"errors"
 	"fmt"
 	"log"
 	"os"
@@ -10,18 +10,31 @@ import (
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
 	"google.golang.org/api/youtube/v3"
+
+	"github.com/MiguelMoll/joycast/realm"
 )
 
-type youtubeHandler struct{}
+type youtubeOption func(y *youtubeHandler) error
 
-func YoutubeHandler() *youtubeHandler {
-	return nil
+type youtubeHandler struct {
+	users *realm.UserService
+}
+
+func YoutubeHandler(opts ...youtubeOption) (*youtubeHandler, error) {
+	y := &youtubeHandler{}
+
+	for _, opt := range opts {
+		if err := opt(y); err != nil {
+			return nil, err
+		}
+	}
+	return y, nil
 }
 
 func (y *youtubeHandler) Handle(msg string) {
 	fmt.Println(msg)
 
-	service, err := newClient()
+	service, err := y.newClient()
 	if err != nil {
 		log.Fatalf("Unable to create YouTube service: %v", err)
 	}
@@ -53,19 +66,25 @@ func (y *youtubeHandler) Handle(msg string) {
 	fmt.Printf("Upload successful! Video ID: %v\n", response.Id)
 }
 
-func newClient() (*youtube.Service, error) {
-	oauth := []byte(`{"expiry": "2019-02-28T21:37:12.260700309-05:00", "token_type": "Bearer", "access_token": "ya29.Glu_BqRabMrE9ZxvnKarqr27XFM8L8uEYEh2w42vdUDET1nxQqmhCY4r1_WUMNuNG4UyfEXbeqXT7QZDaNElkMulXcr1Ik-uQ7a-crGWQ06KxAo6hJC7GUpDSUiJ", "refresh_token": "1/AtDMHsIN7q3yBfo4PEMe5uo6mH3hkl2WjKmub2H1t8OBOHW3FaS9vglVQSuVbRAk"}`)
-
-	var token oauth2.Token
-	if err := json.Unmarshal(oauth, &token); err != nil {
-		return nil, err
+func YoutubeUsers(u *realm.UserService) youtubeOption {
+	return func(y *youtubeHandler) error {
+		if u == nil {
+			return errors.New("user service not initialized")
+		}
+		y.users = u
+		return nil
 	}
+}
+
+func (y *youtubeHandler) newClient() (*youtube.Service, error) {
+	user, err := y.users.Get(1)
+
 	config, err := newConfig()
 	if err != nil {
 		return nil, err
 	}
 
-	client := config.Client(context.Background(), &token)
+	client := config.Client(context.Background(), user.OauthToken)
 	return youtube.New(client)
 }
 
